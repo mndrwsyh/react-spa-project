@@ -11,14 +11,27 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
-
-const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+import PetsIcon from "@mui/icons-material/Pets";
+import { Link } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { API_URL } from "../utilities/constants";
+import SettingsIcon from "@mui/icons-material/Settings";
+import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 
 function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [cookies, setCookie, removeCookie] = useCookies(["currentuser"]);
+  const { currentuser } = cookies;
+
+  const pages = ["Home", "Services", "Book Appointment", "Reviews", "Gallery"];
+
+  const settings = currentuser
+    ? [
+        currentuser.role === "admin" ? "All Appointments" : "My Appointments",
+        "Logout",
+      ]
+    : ["Login", "Sign Up"];
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -36,10 +49,23 @@ function Header() {
   };
 
   return (
-    <AppBar position="static" sx={{ color: "black" }}>
+    <AppBar
+      position="static"
+      sx={{
+        backgroundColor: "transparent",
+        boxShadow: "none",
+      }}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <PetsIcon
+            sx={{
+              display: { xs: "none", md: "flex" },
+              mr: 1,
+              mb: "2px",
+              color: "deeppink",
+            }}
+          />
           <Typography
             variant="h6"
             noWrap
@@ -55,7 +81,7 @@ function Header() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            C&D SPA
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -86,13 +112,36 @@ function Header() {
               sx={{ display: { xs: "block", md: "none" } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: "center" }}>{page}</Typography>
+                <MenuItem
+                  component={Link}
+                  to={
+                    page === "Home"
+                      ? "/"
+                      : page === "Book Appointment"
+                      ? currentuser
+                        ? "/bookings"
+                        : "/signup"
+                      : `/${page.toLowerCase()}`
+                  }
+                  key={page}
+                  onClick={handleCloseNavMenu}
+                >
+                  <Typography
+                    sx={{
+                      textAlign: "center",
+                      textDecoration: "none",
+                      color: "black",
+                    }}
+                  >
+                    {page}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          <PetsIcon
+            sx={{ display: { xs: "flex", md: "none" }, mr: 1, color: "black" }}
+          />
           <Typography
             variant="h5"
             noWrap
@@ -111,9 +160,26 @@ function Header() {
           >
             LOGO
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+              justifyContent: "end",
+              marginRight: 3,
+            }}
+          >
             {pages.map((page) => (
               <Button
+                component={Link}
+                to={
+                  page === "Home"
+                    ? "/"
+                    : page === "Book Appointment"
+                    ? currentuser
+                      ? "/bookings"
+                      : "/signup"
+                    : `/${page.toLowerCase()}`
+                }
                 key={page}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "black", display: "block" }}
@@ -125,7 +191,14 @@ function Header() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                {currentuser ? (
+                  <Avatar alt="Remy Sharp" />
+                ) : (
+                  // <CollectionsBookmarkIcon
+                  //   sx={{ fontSize: "40px", color: "deeppink" }}
+                  // />
+                  <SettingsIcon sx={{ fontSize: "40px" }} />
+                )}
               </IconButton>
             </Tooltip>
             <Menu
@@ -145,7 +218,29 @@ function Header() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem
+                  component={Link}
+                  to={
+                    setting === "My Appointments"
+                      ? "/appointments"
+                      : setting === "All Appointments"
+                      ? "/appointments"
+                      : setting === "Sign Up"
+                      ? "/signup"
+                      : setting === "Logout"
+                      ? "/"
+                      : `/${setting.toLowerCase()}`
+                  }
+                  key={setting}
+                  onClick={
+                    setting === "Logout"
+                      ? () => {
+                          removeCookie("currentuser");
+                          navigate("/");
+                        }
+                      : handleCloseNavMenu
+                  }
+                >
                   <Typography sx={{ textAlign: "center" }}>
                     {setting}
                   </Typography>
