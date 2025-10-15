@@ -78,7 +78,7 @@ export default function ServicesEdit() {
       !name.trim() ||
       !description.trim()
     ) {
-      toast.error("Please fill up all fields.");
+      return toast.error("Please fill up all fields.");
     }
 
     try {
