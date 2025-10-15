@@ -229,7 +229,7 @@ export default function BookingPage() {
                 }}
                 value={petName}
                 onChange={(e) => setPetName(e.target.value)}
-                slotProps={{ htmlInput: { maxLength: 20 } }}
+                slotProps={{ htmlInput: { maxLength: 25 } }}
                 label="Pet Name"
                 fullWidth
               />
@@ -251,7 +251,7 @@ export default function BookingPage() {
                 }}
                 value={petBreed}
                 onChange={(e) => setPetBreed(e.target.value)}
-                slotProps={{ htmlInput: { maxLength: 20 } }}
+                slotProps={{ htmlInput: { maxLength: 25 } }}
                 label="Pet Breed"
                 fullWidth
               />
