@@ -50,7 +50,7 @@ export default function ReviewsPage() {
     // 1. check for error
 
     try {
-      if (!name || !email || !rating || !reviewText) {
+      if (!name || !email || !rating || !reviewText || !reviewText.trim()) {
         toast.error("Please fill up all fields.");
       } else {
         // 2. trigger the api to create new review
@@ -274,6 +274,7 @@ export default function ReviewsPage() {
                       }}
                       value={reviewText}
                       onChange={(e) => setReviewText(e.target.value)}
+                      slotProps={{ htmlInput: { maxLength: 80 } }}
                       label="Write your review"
                       fullWidth
                     />

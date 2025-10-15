@@ -26,7 +26,14 @@ export default function SignupPage() {
   const [image, setImage] = useState(null);
 
   const handleSignup = async (res) => {
-    if (!name || !email || !password || !confirmPassword) {
+    if (
+      !name ||
+      !email ||
+      !password ||
+      !confirmPassword ||
+      !name.trim() ||
+      !password.trim()
+    ) {
       toast.error("Please fill up all fields.");
     } else if (!validator.validate(email)) {
       // 2. make sure the email is valid
@@ -106,6 +113,7 @@ export default function SignupPage() {
                   }}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  slotProps={{ htmlInput: { maxLength: 40 } }}
                   label="Name"
                   fullWidth
                 />
