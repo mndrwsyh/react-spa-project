@@ -158,33 +158,41 @@ export default function GalleryPage() {
             </Box>
           </>
         )}
-        <ImageList variant="masonry" cols={3} gap={8}>
-          {gallery.map((g) => (
-            <ImageListItem key={g._id}>
-              <img src={API_URL + g.image} alt="gallery pics" />
-              {currentuser.role === "admin" && (
-                <Button
-                  sx={{
-                    position: "absolute",
-                    color: "#e57b7bff",
-                    backgroundColor: "white",
-                    minHeight: "40px",
-                    minWidth: "30px",
-                    borderRadius: "100%",
-                    top: "10px",
-                    right: "10px",
-                    zIndex: 1,
-                  }}
-                  onClick={() => {
-                    handlePhotoDelete(g._id);
-                  }}
-                >
-                  <DeleteIcon />
-                </Button>
-              )}
-            </ImageListItem>
-          ))}
-        </ImageList>
+        {gallery.length === 0 ? (
+          <Typography variant="h5" align="center" py={3}>
+            No photos added yet.
+          </Typography>
+        ) : (
+          <>
+            <ImageList variant="masonry" cols={3} gap={8}>
+              {gallery.map((g) => (
+                <ImageListItem key={g._id}>
+                  <img src={API_URL + g.image} alt="gallery pics" />
+                  {currentuser.role === "admin" && (
+                    <Button
+                      sx={{
+                        position: "absolute",
+                        color: "#e57b7bff",
+                        backgroundColor: "white",
+                        minHeight: "40px",
+                        minWidth: "30px",
+                        borderRadius: "100%",
+                        top: "10px",
+                        right: "10px",
+                        zIndex: 1,
+                      }}
+                      onClick={() => {
+                        handlePhotoDelete(g._id);
+                      }}
+                    >
+                      <DeleteIcon />
+                    </Button>
+                  )}
+                </ImageListItem>
+              ))}
+            </ImageList>
+          </>
+        )}
       </Box>
     </>
   );

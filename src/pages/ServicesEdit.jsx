@@ -69,7 +69,7 @@ export default function ServicesEdit() {
   const handleFormSubmit = async (event) => {
     // event.preventDefault();
     // 1. check for error
-    if (!name || !price || !duration || !description) {
+    if (!name || !price || !duration || !description || !image) {
       toast.error("Please fill up all fields.");
     }
 
