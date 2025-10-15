@@ -60,7 +60,7 @@ export default function HomePage() {
         </Grid>
         <Grid size={{ sm: 12, md: 7, lg: 7 }}>
           <img
-            src="/images/catdog.png"
+            src="/images/home_picture.png"
             alt="pet_picture"
             style={{
               width: "100%",
