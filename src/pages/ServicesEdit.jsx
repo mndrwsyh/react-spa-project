@@ -3,9 +3,6 @@ import {
   Typography,
   Box,
   TextField,
-  FormControl,
-  InputLabel,
-  Select,
   Button,
   Container,
   Paper,
@@ -20,6 +17,8 @@ import { uploadImage } from "../utilities/api_image";
 import { useNavigate, useParams } from "react-router-dom";
 import { getService } from "../utilities/api_services";
 import { Link } from "react-router-dom";
+import Doodles from "../components/Doodles";
+import { useCookies } from "react-cookie";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -32,10 +31,12 @@ const VisuallyHiddenInput = styled("input")({
   whiteSpace: "nowrap",
   width: 1,
 });
-
-const ServicesEdit = () => {
+export default function ServicesEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [cookies] = useCookies(["currentuser"]);
+  const { currentuser = {} } = cookies; // assign empty object to avoid error
+  const { token = "" } = currentuser;
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -46,9 +47,9 @@ const ServicesEdit = () => {
   useEffect(() => {
     getService(id)
       .then((serviceData) => {
-        // check if product data is empty or not
+        // check if service data is empty or not
         if (serviceData) {
-          // update state with product data
+          // update state with service data
           setName(serviceData ? serviceData.name : "");
           setPrice(serviceData ? serviceData.price : 0);
           setDuration(serviceData ? serviceData.duration : 0);
@@ -69,14 +70,14 @@ const ServicesEdit = () => {
     // event.preventDefault();
     // 1. check for error
     if (!name || !price || !duration || !description) {
-      toast.error("Please fill up the required fields.");
+      toast.error("Please fill up all fields.");
     }
 
     try {
-      // 2. trigger the api to create new product
-      await updateService(id, name, price, duration, description, image);
+      // 2. trigger the api to update service
+      await updateService(id, name, price, duration, description, image, token);
 
-      // 3. if successfull, redirect user back to homepage and show success message
+      // 3. if successfull, redirect user back to service page and show success message
       navigate("/services");
       toast.success("Service has been updated!");
     } catch (error) {
@@ -107,8 +108,10 @@ const ServicesEdit = () => {
         sx={{
           mx: 3,
           my: 4,
+          position: "relative",
         }}
       >
+        <Doodles />
         <Container maxWidth="sm">
           <Typography
             variant="h4"
@@ -127,7 +130,16 @@ const ServicesEdit = () => {
           >
             <Box mb={2}>
               <TextField
-                sx={{ outlineColor: "deeppink" }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#ab8d73", // focused state
+                    },
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#ab8d73", // label color when focused
+                  },
+                }}
                 InputProps={{
                   style: {
                     borderRadius: "30px",
@@ -141,7 +153,16 @@ const ServicesEdit = () => {
             </Box>
             <Box mb={2} display={"flex"} gap={2}>
               <TextField
-                color="warning"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#ab8d73", // focused state
+                    },
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#ab8d73", // label color when focused
+                  },
+                }}
                 type="number"
                 inputProps={{
                   min: 0,
@@ -155,7 +176,16 @@ const ServicesEdit = () => {
                 fullWidth
               />
               <TextField
-                color="warning"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#ab8d73", // focused state
+                    },
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#ab8d73", // label color when focused
+                  },
+                }}
                 type="number"
                 inputProps={{
                   min: 0,
@@ -173,6 +203,16 @@ const ServicesEdit = () => {
               <TextField
                 multiline
                 rows={3}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#ab8d73", // focused state
+                    },
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#ab8d73", // label color when focused
+                  },
+                }}
                 InputProps={{
                   style: {
                     borderRadius: "20px",
@@ -192,10 +232,13 @@ const ServicesEdit = () => {
                 <>
                   <img src={API_URL + image} width="150px" />
                   <Button
-                    color="warning"
                     variant="contained"
                     size="small"
-                    sx={{ borderRadius: " 20px" }}
+                    sx={{
+                      borderRadius: " 20px",
+                      backgroundColor: "#392f26",
+                      color: "#f1dcc9",
+                    }}
                     onClick={() => {
                       setImage(null);
                     }}
@@ -205,7 +248,11 @@ const ServicesEdit = () => {
                 </>
               ) : (
                 <Button
-                  sx={{ borderRadius: " 20px" }}
+                  sx={{
+                    borderRadius: " 20px",
+                    backgroundColor: "#392f26",
+                    color: "#f1dcc9",
+                  }}
                   component="label"
                   role={undefined}
                   variant="contained"
@@ -229,7 +276,7 @@ const ServicesEdit = () => {
             </Box>
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Button
-                sx={{ backgroundColor: "deeppink", borderRadius: "20px" }}
+                sx={{ backgroundColor: "#ab8d73", borderRadius: "20px" }}
                 fullWidth
                 variant="contained"
                 onClick={handleFormSubmit}
@@ -242,6 +289,4 @@ const ServicesEdit = () => {
       </Box>
     </>
   );
-};
-
-export default ServicesEdit;
+}

@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router";
-import { Toaster, toast } from "sonner";
+import { Toaster } from "sonner";
 import HomePage from "./pages/HomePage";
 import ServicesPage from "./pages/ServicesPage";
 import BookingPage from "./pages/BookingPage";
@@ -9,10 +9,8 @@ import ServicesEdit from "./pages/ServicesEdit";
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 import AppointmentsPage from "./pages/AppointmentsPage";
-import ProfilePage from "./pages/ProfilePage";
 import GalleryPage from "./pages/GalleryPage";
 import { CookiesProvider } from "react-cookie";
-// import { CookiesProvider } from "react-cookie";
 
 function App() {
   return (
@@ -28,7 +26,6 @@ function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/appointments" element={<AppointmentsPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/gallery" element={<GalleryPage />} />
         </Routes>
         <Toaster />

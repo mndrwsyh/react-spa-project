@@ -18,7 +18,7 @@ import { API_URL } from "../utilities/constants";
 import SettingsIcon from "@mui/icons-material/Settings";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 
-function Header() {
+export default function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [cookies, setCookie, removeCookie] = useCookies(["currentuser"]);
@@ -63,7 +63,7 @@ function Header() {
               display: { xs: "none", md: "flex" },
               mr: 1,
               mb: "2px",
-              color: "deeppink",
+              color: "#ab8d73",
             }}
           />
           <Typography
@@ -140,7 +140,11 @@ function Header() {
             </Menu>
           </Box>
           <PetsIcon
-            sx={{ display: { xs: "flex", md: "none" }, mr: 1, color: "black" }}
+            sx={{
+              display: { xs: "flex", md: "none" },
+              mr: 1,
+              color: "#ab8d73",
+            }}
           />
           <Typography
             variant="h5"
@@ -158,7 +162,7 @@ function Header() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            C&D SPA
           </Typography>
           <Box
             sx={{
@@ -253,4 +257,3 @@ function Header() {
     </AppBar>
   );
 }
-export default Header;

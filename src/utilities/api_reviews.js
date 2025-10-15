@@ -1,13 +1,17 @@
 import axios from "axios";
 import { API_URL } from "./constants";
 
-export async function getReviews() {
-  const response = await axios.get(API_URL + "reviews");
+export async function getReviews(rating, page = 1) {
+  const response = await axios.get(
+    API_URL +
+      "reviews?page=" +
+      page +
+      (rating === "All" ? "" : "&rating=" + rating)
+  );
   return response.data;
 }
 export async function getReview(id) {
   const response = await axios.get(API_URL + "reviews/" + id);
-  //GET http:///sjdksjvnkjsblablabla
   return response.data;
 }
 
@@ -35,25 +39,11 @@ export async function addReview(
   return response.data;
 }
 
-// export async function updateReview(
-//   id,
-//   name,
-//   price,
-//   duration,
-//   description,
-//   image
-// ) {
-//   const response = await axios.put(API_URL + "Reviews/" + id, {
-//     name,
-//     price,
-//     duration,
-//     description,
-//     image,
-//   });
-//   return response.data;
-// }
-
-export async function deleteReview(id) {
-  const response = await axios.delete(API_URL + "reviews/" + id);
+export async function deleteReview(id, token) {
+  const response = await axios.delete(API_URL + "reviews/" + id, {
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
   return response.data;
 }

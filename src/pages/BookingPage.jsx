@@ -11,14 +11,11 @@ import {
   Paper,
   MenuItem,
 } from "@mui/material";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import Doodles from "../components/Doodles";
 import { useState, useEffect } from "react";
-import { styled } from "@mui/material/styles";
 import { toast } from "sonner";
-import { addAppointment } from "../utilities/api_appointments";
+import { getAppointments, addAppointment } from "../utilities/api_appointments";
 import { getServices } from "../utilities/api_services";
-import { API_URL } from "../utilities/constants";
-import { uploadImage } from "../utilities/api_image";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import dayjs from "dayjs";
@@ -26,25 +23,11 @@ import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
-import { DesktopDateTimePicker } from "@mui/x-date-pickers/DesktopDateTimePicker";
-import { StaticDateTimePicker } from "@mui/x-date-pickers/StaticDateTimePicker";
 
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
-
-const BookingPage = () => {
+export default function BookingPage() {
   const [cookies, setCookie, removeCookie] = useCookies(["currentuser"]);
   const { currentuser } = cookies;
+  const { token = "" } = currentuser;
 
   const navigate = useNavigate();
   const [name, setName] = useState(currentuser.name);
@@ -52,7 +35,6 @@ const BookingPage = () => {
   const [petName, setPetName] = useState("");
   const [petBreed, setPetBreed] = useState("");
   const [selectedDateTime, setSelectedDateTime] = useState(null);
-  const [image, setImage] = useState(null);
 
   const [service, setService] = useState("");
 
@@ -90,7 +72,8 @@ const BookingPage = () => {
         service,
         petName,
         petBreed,
-        selectedDateTime
+        selectedDateTime,
+        token
       );
 
       // 3. if successfull, redirect user back to homepage and show success message
@@ -98,6 +81,7 @@ const BookingPage = () => {
       console.log(appointments);
       toast.success("Appointment has been booked!");
     } catch (error) {
+      toast.error(error.response.data.message);
       console.log(error.message);
     }
   };
@@ -109,8 +93,10 @@ const BookingPage = () => {
         sx={{
           mx: 3,
           my: 4,
+          position: "relative",
         }}
       >
+        <Doodles />
         <Container maxWidth="md">
           <Typography
             variant="h4"
@@ -129,33 +115,64 @@ const BookingPage = () => {
           >
             <Box mb={2} display={"flex"} gap={2}>
               <TextField
-                sx={{ outlineColor: "deeppink" }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#ab8d73", // focused state
+                    },
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#ab8d73", // label color when focused
+                  },
+                }}
                 InputProps={{
                   style: {
                     borderRadius: "30px",
                   },
                 }}
                 value={name}
-                // onChange={(e) => setName(e.target.value)}
                 label="Name"
                 fullWidth
               />
               <TextField
-                sx={{ outlineColor: "deeppink" }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#ab8d73", // focused state
+                    },
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#ab8d73", // label color when focused
+                  },
+                }}
                 InputProps={{
                   style: {
                     borderRadius: "30px",
                   },
                 }}
                 value={email}
-                // onChange={(e) => setEmail(e.target.value)}
                 label="Email"
                 fullWidth
               />
             </Box>
 
             <Box mb={2}>
-              <FormControl color="warning" sx={{ width: "100%" }}>
+              <FormControl
+                sx={{
+                  minWidth: "250px",
+                  backgroundColor: "white",
+                  borderRadius: "30px",
+                  width: "100%",
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#ab8d73", // focused state
+                    },
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#ab8d73", // label color when focused
+                  },
+                }}
+              >
                 <InputLabel
                   id="demo-simple-select-label"
                   sx={{ backgroundColor: "white", paddingRight: "10px" }}
@@ -181,7 +198,16 @@ const BookingPage = () => {
 
             <Box mb={2} display={"flex"} gap={2}>
               <TextField
-                sx={{ outlineColor: "deeppink" }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#ab8d73", // focused state
+                    },
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#ab8d73", // label color when focused
+                  },
+                }}
                 InputProps={{
                   style: {
                     borderRadius: "30px",
@@ -193,7 +219,16 @@ const BookingPage = () => {
                 fullWidth
               />
               <TextField
-                sx={{ outlineColor: "deeppink" }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#ab8d73", // focused state
+                    },
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#ab8d73", // label color when focused
+                  },
+                }}
                 InputProps={{
                   style: {
                     borderRadius: "30px",
@@ -207,34 +242,29 @@ const BookingPage = () => {
             </Box>
             <Box mb={2}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer
-                  slotProps={{
-                    textField: {
-                      sx: {
-                        "& .MuiInputBase-root": {
-                          borderRadius: "20px",
-                        },
-                        "& .MuiOutlinedInput-notchedOutline": {
-                          borderColor: "warning.main",
-                        },
-                      },
-                    },
-                  }}
-                  components={["StaticDateTimePicker"]}
-                >
+                <DemoContainer components={["StaticDateTimePicker"]}>
                   <DateTimePicker
                     label="Date/Time"
                     skipDisabled
                     disablePast
                     format="hh:mma MMMM D, YYYY"
-                    timeSteps={{ minutes: 30 }}
+                    timeSteps={{ minutes: 60 }}
                     minTime={dayjs(selectedDateTime).hour(9).minute(0)}
-                    maxTime={dayjs(selectedDateTime).hour(17).minute(30)}
-                    // minDate={dayjs().set("day", 1)}
+                    maxTime={dayjs(selectedDateTime).hour(18).minute(0)}
+                    minDate={dayjs().set("day", 1)}
                     maxDate={dayjs().set("day", 30)}
                     value={selectedDateTime}
                     onChange={(newDateTime) => {
                       setSelectedDateTime(newDateTime);
+                    }}
+                    slotProps={{
+                      textField: {
+                        inputProps: {
+                          readOnly: true, // Prevent typing
+                        },
+                        // This prevents opening the keyboard editing when users press any key
+                        onKeyDown: (e) => e.preventDefault(),
+                      },
                     }}
                   />
                 </DemoContainer>
@@ -242,7 +272,7 @@ const BookingPage = () => {
             </Box>
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Button
-                sx={{ backgroundColor: "deeppink", borderRadius: "30px" }}
+                sx={{ backgroundColor: "#ab8d73", borderRadius: "30px" }}
                 fullWidth
                 variant="contained"
                 onClick={handleFormSubmit}
@@ -255,6 +285,4 @@ const BookingPage = () => {
       </Box>
     </>
   );
-};
-
-export default BookingPage;
+}

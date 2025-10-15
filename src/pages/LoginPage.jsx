@@ -1,38 +1,31 @@
 import Header from "../components/Header";
 import {
-  Card,
   TextField,
   Button,
   Grid,
   Typography,
   Box,
-  FormControl,
-  InputLabel,
-  Select,
   Container,
   Paper,
 } from "@mui/material";
-import { API_URL } from "../utilities/constants";
 import { login } from "../utilities/api_users";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useCookies } from "react-cookie";
 import validator from "email-validator";
 import { useNavigate } from "react-router-dom";
-import { styled } from "@mui/material/styles";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { uploadImage } from "../utilities/api_image";
 import { Link } from "react-router-dom";
 
-const LoginPage = () => {
+export default function LoginPage() {
   const navigate = useNavigate();
   const [cookies, setCookie, removeCookie] = useCookies(["currentuser"]);
+  const { currentuser } = cookies;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
     if (!email || !password) {
-      toast.error("Please fill up all the fields.");
+      toast.error("Please fill up all fields.");
     } else if (!validator.validate(email)) {
       // 2. make sure the email is valid
       toast.error("Please use a valid email address.");
@@ -57,7 +50,14 @@ const LoginPage = () => {
       <Header />
       <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 2 }}>
         <Grid gap={5} size={{ sm: 12, md: 5, lg: 5 }}>
-          insert text here
+          <img
+            src="/images/login_picture.png"
+            alt="pet_picture"
+            style={{
+              width: "100%",
+              height: "90.1vh",
+            }}
+          />
         </Grid>
         <Grid gap={5} size={{ sm: 12, md: 7, lg: 7 }}>
           <Paper
@@ -85,7 +85,16 @@ const LoginPage = () => {
               </Typography>
               <Box mb={2}>
                 <TextField
-                  sx={{ outlineColor: "deeppink" }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#ab8d73", // focused state
+                      },
+                    },
+                    "& .MuiInputLabel-root.Mui-focused": {
+                      color: "#ab8d73", // label color when focused
+                    },
+                  }}
                   InputProps={{
                     style: {
                       borderRadius: "30px",
@@ -100,7 +109,16 @@ const LoginPage = () => {
               <Box mb={2}>
                 <TextField
                   type="password"
-                  sx={{ outlineColor: "deeppink" }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#ab8d73", // focused state
+                      },
+                    },
+                    "& .MuiInputLabel-root.Mui-focused": {
+                      color: "#ab8d73", // label color when focused
+                    },
+                  }}
                   InputProps={{
                     style: {
                       borderRadius: "30px",
@@ -114,7 +132,7 @@ const LoginPage = () => {
               </Box>
               <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
                 <Button
-                  sx={{ backgroundColor: "deeppink", borderRadius: "30px" }}
+                  sx={{ backgroundColor: "#ab8d73", borderRadius: "30px" }}
                   fullWidth
                   variant="contained"
                   onClick={handleLogin}
@@ -137,7 +155,7 @@ const LoginPage = () => {
                   sx={{
                     textDecoration: "none",
                     fontWeight: "300",
-                    color: "deeppink",
+                    color: "#ab8d73",
                     marginLeft: 1,
                   }}
                   component={Link}
@@ -152,6 +170,4 @@ const LoginPage = () => {
       </Grid>
     </>
   );
-};
-
-export default LoginPage;
+}

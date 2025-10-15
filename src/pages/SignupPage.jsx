@@ -1,40 +1,20 @@
 import Header from "../components/Header";
 import {
-  Card,
   TextField,
   Button,
   Grid,
   Typography,
   Box,
-  FormControl,
-  InputLabel,
-  Select,
   Container,
   Paper,
 } from "@mui/material";
-import { API_URL } from "../utilities/constants";
 import { signup } from "../utilities/api_users";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useCookies } from "react-cookie";
 import validator from "email-validator";
 import { useNavigate } from "react-router-dom";
-import { styled } from "@mui/material/styles";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { uploadImage } from "../utilities/api_image";
 import { Link } from "react-router-dom";
-
-// const VisuallyHiddenInput = styled("input")({
-//   clip: "rect(0 0 0 0)",
-//   clipPath: "inset(50%)",
-//   height: 1,
-//   overflow: "hidden",
-//   position: "absolute",
-//   bottom: 0,
-//   left: 0,
-//   whiteSpace: "nowrap",
-//   width: 1,
-// });
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -45,9 +25,9 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [image, setImage] = useState(null);
 
-  const handleSignup = async () => {
+  const handleSignup = async (res) => {
     if (!name || !email || !password || !confirmPassword) {
-      toast.error("Please fill up all the fields.");
+      toast.error("Please fill up all fields.");
     } else if (!validator.validate(email)) {
       // 2. make sure the email is valid
       toast.error("Please use a valid email address.");
@@ -65,7 +45,7 @@ export default function SignupPage() {
         navigate("/");
       } catch (error) {
         console.log(error);
-        toast.error("jj");
+        toast.error(error.response.data.message);
       }
     }
   };
@@ -75,7 +55,14 @@ export default function SignupPage() {
       <Header />
       <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 2 }}>
         <Grid gap={5} size={{ sm: 12, md: 5, lg: 5 }}>
-          insert text here
+          <img
+            src="/images/signup_picture.png"
+            alt="pet_picture"
+            style={{
+              width: "100%",
+              height: "90.1vh",
+            }}
+          />
         </Grid>
         <Grid gap={5} size={{ sm: 12, md: 7, lg: 7 }}>
           <Paper
@@ -102,7 +89,16 @@ export default function SignupPage() {
               </Typography>
               <Box mb={2}>
                 <TextField
-                  sx={{ outlineColor: "deeppink" }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#ab8d73", // focused state
+                      },
+                    },
+                    "& .MuiInputLabel-root.Mui-focused": {
+                      color: "#ab8d73", // label color when focused
+                    },
+                  }}
                   InputProps={{
                     style: {
                       borderRadius: "30px",
@@ -116,7 +112,16 @@ export default function SignupPage() {
               </Box>
               <Box mb={2}>
                 <TextField
-                  sx={{ outlineColor: "deeppink" }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#ab8d73", // focused state
+                      },
+                    },
+                    "& .MuiInputLabel-root.Mui-focused": {
+                      color: "#ab8d73", // label color when focused
+                    },
+                  }}
                   InputProps={{
                     style: {
                       borderRadius: "30px",
@@ -128,40 +133,19 @@ export default function SignupPage() {
                   fullWidth
                 />
               </Box>
-              {/* <Box mb={2} display={"flex"} gap={2}>
-                <TextField
-                  color="warning"
-                  type="number"
-                  inputProps={{
-                    min: 0,
-                    style: {
-                      borderRadius: "30px",
-                    },
-                  }}
-                  // value={price}
-                  // onChange={(e) => setPrice(e.target.value)}
-                  label="Price"
-                  fullWidth
-                />
-                <TextField
-                  color="warning"
-                  type="number"
-                  inputProps={{
-                    min: 0,
-                    style: {
-                      borderRadius: "30px",
-                    },
-                  }}
-                  // value={duration}
-                  // onChange={(e) => setDuration(e.target.value)}
-                  label="Duration"
-                  fullWidth
-                />
-              </Box> */}
               <Box mb={2}>
                 <TextField
                   type="password"
-                  sx={{ outlineColor: "deeppink" }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#ab8d73", // focused state
+                      },
+                    },
+                    "& .MuiInputLabel-root.Mui-focused": {
+                      color: "#ab8d73", // label color when focused
+                    },
+                  }}
                   InputProps={{
                     style: {
                       borderRadius: "30px",
@@ -176,7 +160,16 @@ export default function SignupPage() {
               <Box mb={2}>
                 <TextField
                   type="password"
-                  sx={{ outlineColor: "deeppink" }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#ab8d73", // focused state
+                      },
+                    },
+                    "& .MuiInputLabel-root.Mui-focused": {
+                      color: "#ab8d73", // label color when focused
+                    },
+                  }}
                   InputProps={{
                     style: {
                       borderRadius: "30px",
@@ -188,60 +181,9 @@ export default function SignupPage() {
                   fullWidth
                 />
               </Box>
-              {/* <Box
-                mb={2}
-                sx={{ display: "flex", gap: "10px", alignItems: "center" }}
-              >
-                {image ? (
-                  <>
-                    <img
-                      src={API_URL + image}
-                      style={{
-                        height: "100px",
-                        width: "100px",
-                        borderRadius: "50%",
-                        border: "1px solid orange",
-                      }}
-                    />
-                    <Button
-                      color="warning"
-                      variant="contained"
-                      sx={{ borderRadius: " 20px" }}
-                      size="small"
-                      onClick={() => {
-                        setImage(null);
-                      }}
-                    >
-                      Remove
-                    </Button>
-                  </>
-                ) : (
-                  <Button
-                    sx={{ borderRadius: "20px" }}
-                    component="label"
-                    role={undefined}
-                    variant="contained"
-                    color="warning"
-                    tabIndex={-1}
-                    startIcon={<AccountCircleIcon />}
-                  >
-                    Upload Profile Picture
-                    <VisuallyHiddenInput
-                      type="file"
-                      onChange={async (event) => {
-                        const data = await uploadImage(event.target.files[0]);
-                        // {image_url : "uploads/image.jpg"}
-                        // set image url into state
-                        setImage(data.image_url);
-                      }}
-                      accept="image/*"
-                    />
-                  </Button>
-                )}
-              </Box> */}
               <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
                 <Button
-                  sx={{ backgroundColor: "deeppink", borderRadius: "30px" }}
+                  sx={{ backgroundColor: "#ab8d73", borderRadius: "30px" }}
                   fullWidth
                   variant="contained"
                   onClick={handleSignup}
@@ -263,7 +205,7 @@ export default function SignupPage() {
                   sx={{
                     textDecoration: "none",
                     fontWeight: "300",
-                    color: "deeppink",
+                    color: "#ab8d73",
                     marginLeft: 1,
                   }}
                   component={Link}
@@ -279,5 +221,3 @@ export default function SignupPage() {
     </>
   );
 }
-
-// export default SignupPage;

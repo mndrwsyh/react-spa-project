@@ -1,10 +1,5 @@
 import Header from "../components/Header";
-import {
-  getServices,
-  addService,
-  updateService,
-  deleteService,
-} from "../utilities/api_services";
+import { getServices, deleteService } from "../utilities/api_services";
 import { useState, useEffect } from "react";
 import {
   Box,
@@ -14,15 +9,11 @@ import {
   FormControl,
   Select,
   MenuItem,
-  List,
-  ListItem,
-  ListItemText,
   Button,
   CardContent,
   CardMedia,
   Grid,
   Chip,
-  Container,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -32,47 +23,44 @@ import Swal from "sweetalert2";
 import { toast } from "sonner";
 import { useCookies } from "react-cookie";
 
-const ServicesPage = () => {
+export default function ServicesPage() {
   const [cookies, setCookie, removeCookie] = useCookies(["currentuser"]);
   const { currentuser = {} } = cookies; // assign empty object to avoid error
   const { token = "" } = currentuser;
   const [services, setServices] = useState([]);
-  // const [label, setLabel] = useState("");
+  const [sortBy, setSortBy] = useState("none");
 
   useEffect(() => {
-    getServices()
+    getServices(sortBy, token)
       .then((data) => {
         setServices(data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [sortBy, token]);
 
   const handleServiceDelete = (id) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "Are you sure you want to delete this service?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "orange",
-      cancelButtonColor: "hsla(0, 100%, 65%, 1.00)",
+      confirmButtonColor: "#e57b7bff",
+      cancelButtonColor: "#e0b793ff",
       confirmButtonText: "Yes, delete it.",
     }).then(async (result) => {
-      // once user delete, then we get the product
-      if (result.isConfirmed) {
-        // delete product via api
-        await deleteService(id);
-        // delete product from the state
-        // method 1
-        // delete manually from the state
-        // setProducts(products.filter((p) => p._id !== id));
-
-        // method 2
-        // get new data from backend
-        const updatedServices = await getServices();
-        setServices(updatedServices);
-        toast.success("Service has been deleted.");
+      // once user delete, then we get the service
+      try {
+        if (result.isConfirmed) {
+          // delete service via api
+          await deleteService(id, token);
+          // get new data from backend
+          const updatedServices = await getServices(sortBy, token);
+          setServices(updatedServices);
+          toast.success("Service has been deleted.");
+        }
+      } catch (error) {
+        toast.error(error.response.data.message);
       }
     });
   };
@@ -90,7 +78,6 @@ const ServicesPage = () => {
           sx={{
             display: "flex",
             justifyContent: "space-between",
-
             mb: 1,
           }}
         >
@@ -107,8 +94,8 @@ const ServicesPage = () => {
                 sx={{
                   margin: "1px",
                   backgroundColor: "white",
-                  color: "deeppink",
-                  borderColor: "deeppink",
+                  color: "#392f26",
+                  borderColor: "#392f26",
                   borderRadius: "30px",
                   paddingX: "20px",
                 }}
@@ -121,12 +108,19 @@ const ServicesPage = () => {
                 minWidth: "250px",
                 backgroundColor: "white",
                 borderRadius: "30px",
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#ab8d73", // focused state
+                  },
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "#ab8d73", // label color when focused
+                },
               }}
-              color="warning"
             >
               <InputLabel
                 id="demo-simple-select-label"
-                sx={{ backgroundColor: "white", paddingRight: "10px" }}
+                sx={{ color: "#ab8d73", backgroundColor: "white" }}
               >
                 Sort By
               </InputLabel>
@@ -134,20 +128,15 @@ const ServicesPage = () => {
                 sx={{ borderRadius: "30px" }}
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                //   value={category}
+                value={sortBy}
                 label="Sort"
-                //   onChange={(event) => {
-                //     setCategory(event.target.value);
-                //     // reset the page back to one
-                //     setPage(1);
-                //   }}
+                onChange={(event) => {
+                  setSortBy(event.target.value);
+                }}
               >
-                <MenuItem value="None">No sorting</MenuItem>
-                <MenuItem value="Price">Sort by Price</MenuItem>
-                <MenuItem value="Duration">Sory by Duration</MenuItem>
-                {/* {categories.map((c) => (
-                <MenuItem value={c._id}>{c.label}</MenuItem>
-              ))} */}
+                <MenuItem value="none">No sorting</MenuItem>
+                <MenuItem value="price">Sort by Price</MenuItem>
+                <MenuItem value="duration">Sory by Duration</MenuItem>
               </Select>
             </FormControl>
           </Box>
@@ -156,7 +145,7 @@ const ServicesPage = () => {
           <Grid
             container
             rowSpacing={3}
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+            columnSpacing={{ xs: 1, sm: 2, md: 2 }}
           >
             {services.length === 0 ? (
               <Typography variant="h5" align="center" py={3}>
@@ -164,7 +153,7 @@ const ServicesPage = () => {
               </Typography>
             ) : (
               <>
-                {services.map((service) => (
+                {services.map((service, i) => (
                   <Grid
                     key={service._id}
                     gap={5}
@@ -179,6 +168,9 @@ const ServicesPage = () => {
                         display: "flex",
                         flexDirection: "column",
                         position: "relative",
+                        // use index to alternate between colors of the service
+                        backgroundColor: i % 2 === 0 ? "#f1dcc9" : "#ab8d73",
+                        color: i % 2 === 0 ? "black" : "white",
                       }}
                     >
                       <CardMedia
@@ -207,7 +199,7 @@ const ServicesPage = () => {
                             to={`/services/${service._id}/edit`}
                             sx={{
                               position: "absolute",
-                              color: "green",
+                              color: "#90c991ff",
                               minHeight: "40px",
                               minWidth: "35px",
                               borderRadius: "100%",
@@ -221,12 +213,12 @@ const ServicesPage = () => {
                           <Button
                             sx={{
                               position: "absolute",
-                              color: "red",
+                              color: "#e57b7bff",
                               minHeight: "40px",
                               minWidth: "35px",
                               borderRadius: "100%",
                               top: "7px",
-                              right: "5px",
+                              right: "7px",
                             }}
                             onClick={() => {
                               handleServiceDelete(service._id);
@@ -272,16 +264,19 @@ const ServicesPage = () => {
                           }}
                         >
                           <Chip
-                            variant="outlined"
+                            variant="contained"
                             sx={{
-                              borderColor: "deeppink",
-                              color: "deeppink",
+                              backgroundColor: "#392f26",
+                              color: "#f1dcc9",
                             }}
                             label={`$${service.price}`}
                           />
                           <Chip
-                            variant="outlined"
-                            color="warning"
+                            variant="contained"
+                            sx={{
+                              backgroundColor: "#392f26",
+                              color: "#f1dcc9",
+                            }}
                             label={`${service.duration} Hours`}
                           />
                         </Box>
@@ -296,6 +291,4 @@ const ServicesPage = () => {
       </Box>
     </>
   );
-};
-
-export default ServicesPage;
+}

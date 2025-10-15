@@ -3,9 +3,6 @@ import {
   Typography,
   Box,
   TextField,
-  FormControl,
-  InputLabel,
-  Select,
   Button,
   Container,
   Paper,
@@ -18,6 +15,8 @@ import { addService } from "../utilities/api_services";
 import { API_URL } from "../utilities/constants";
 import { uploadImage } from "../utilities/api_image";
 import { useNavigate } from "react-router-dom";
+import Doodles from "../components/Doodles";
+import { useCookies } from "react-cookie";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -31,8 +30,11 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-const ServicesAdd = () => {
+export default function ServicesAdd() {
   const navigate = useNavigate();
+  const [cookies] = useCookies(["currentuser"]);
+  const { currentuser = {} } = cookies; // assign empty object to avoid error
+  const { token = "" } = currentuser;
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -43,14 +45,14 @@ const ServicesAdd = () => {
     // event.preventDefault();
     // 1. check for error
     if (!name || !price || !duration || !description) {
-      toast.error("Please fill up the required fields.");
+      toast.error("Please fill up all fields.");
     }
 
     try {
-      // 2. trigger the api to create new product
-      await addService(name, price, duration, description, image);
+      // 2. trigger the api to create new service
+      await addService(name, price, duration, description, image, token);
 
-      // 3. if successfull, redirect user back to homepage and show success message
+      // 3. if successfull, redirect user back to service page and show success message
       navigate("/services");
       toast.success("New service has been added!");
     } catch (error) {
@@ -65,8 +67,10 @@ const ServicesAdd = () => {
         sx={{
           mx: 3,
           my: 4,
+          position: "relative",
         }}
       >
+        <Doodles />
         <Container maxWidth="sm">
           <Typography
             variant="h4"
@@ -85,7 +89,16 @@ const ServicesAdd = () => {
           >
             <Box mb={2}>
               <TextField
-                sx={{ outlineColor: "deeppink" }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#ab8d73", // focused state
+                    },
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#ab8d73", // label color when focused
+                  },
+                }}
                 InputProps={{
                   style: {
                     borderRadius: "30px",
@@ -99,7 +112,16 @@ const ServicesAdd = () => {
             </Box>
             <Box mb={2} display={"flex"} gap={2}>
               <TextField
-                color="warning"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#ab8d73", // focused state
+                    },
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#ab8d73", // label color when focused
+                  },
+                }}
                 type="number"
                 inputProps={{
                   min: 0,
@@ -113,7 +135,16 @@ const ServicesAdd = () => {
                 fullWidth
               />
               <TextField
-                color="warning"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#ab8d73", // focused state
+                    },
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#ab8d73", // label color when focused
+                  },
+                }}
                 type="number"
                 inputProps={{
                   min: 0,
@@ -131,6 +162,16 @@ const ServicesAdd = () => {
               <TextField
                 multiline
                 rows={3}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#ab8d73", // focused state
+                    },
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#ab8d73", // label color when focused
+                  },
+                }}
                 InputProps={{
                   style: {
                     borderRadius: "20px",
@@ -152,7 +193,11 @@ const ServicesAdd = () => {
                   <Button
                     color="warning"
                     variant="contained"
-                    sx={{ borderRadius: " 20px" }}
+                    sx={{
+                      borderRadius: " 20px",
+                      backgroundColor: "#392f26",
+                      color: "#f1dcc9",
+                    }}
                     size="small"
                     onClick={() => {
                       setImage(null);
@@ -163,7 +208,11 @@ const ServicesAdd = () => {
                 </>
               ) : (
                 <Button
-                  sx={{ borderRadius: "20px" }}
+                  sx={{
+                    borderRadius: "20px",
+                    backgroundColor: "#392f26",
+                    color: "#f1dcc9",
+                  }}
                   component="label"
                   role={undefined}
                   variant="contained"
@@ -187,7 +236,7 @@ const ServicesAdd = () => {
             </Box>
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Button
-                sx={{ backgroundColor: "deeppink", borderRadius: "30px" }}
+                sx={{ backgroundColor: "#ab8d73", borderRadius: "30px" }}
                 fullWidth
                 variant="contained"
                 onClick={handleFormSubmit}
@@ -200,6 +249,4 @@ const ServicesAdd = () => {
       </Box>
     </>
   );
-};
-
-export default ServicesAdd;
+}
