@@ -316,7 +316,8 @@ export default function ReviewsPage() {
                       {r.reviewText}
                     </Typography>
 
-                    {currentuser.role === "admin" && (
+                    {(currentuser.role === "admin" ||
+                      currentuser.email === r.customerEmail) && (
                       <>
                         <Button
                           sx={{
