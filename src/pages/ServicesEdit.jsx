@@ -229,7 +229,7 @@ export default function ServicesEdit() {
                 }}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                slotProps={{ htmlInput: { maxLength: 250 } }}
+                slotProps={{ htmlInput: { maxLength: 100 } }}
                 label="Description"
                 fullWidth
               />
