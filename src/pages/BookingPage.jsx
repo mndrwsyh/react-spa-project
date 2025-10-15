@@ -51,6 +51,9 @@ export default function BookingPage() {
   }, []);
 
   const handleFormSubmit = async (event) => {
+    const startTime = dayjs(selectedDateTime).hour(9).minute(0);
+    const endTime = dayjs(selectedDateTime).hour(18).minute(0);
+
     // event.preventDefault();
     // 1. check for error
     if (
@@ -65,21 +68,30 @@ export default function BookingPage() {
     }
 
     try {
-      // 2. trigger the api to create new product
-      const appointments = await addAppointment(
-        name,
-        email,
-        service,
-        petName,
-        petBreed,
-        selectedDateTime,
-        token
-      );
+      if (
+        dayjs(selectedDateTime).isBefore(startTime) ||
+        dayjs(selectedDateTime).isAfter(endTime)
+      ) {
+        toast.error(
+          "Please choose a time within working hours (9am - 6pm) only."
+        );
+      } else {
+        // 2. trigger the api to create new product
+        const appointments = await addAppointment(
+          name,
+          email,
+          service,
+          petName,
+          petBreed,
+          selectedDateTime,
+          token
+        );
 
-      // 3. if successfull, redirect user back to homepage and show success message
-      navigate("/appointments");
-      console.log(appointments);
-      toast.success("Appointment has been booked!");
+        // 3. if successfull, redirect user back to homepage and show success message
+        navigate("/appointments");
+        console.log(appointments);
+        toast.success("Appointment has been booked!");
+      }
     } catch (error) {
       toast.error(error.response.data.message);
       console.log(error.message);
