@@ -62,9 +62,11 @@ export default function BookingPage() {
       !service ||
       !petName ||
       !petBreed ||
-      !selectedDateTime
+      !selectedDateTime ||
+      !petName.trim() ||
+      !petBreed.trim()
     ) {
-      toast.error("Please fill up all fields.");
+      return toast.error("Please fill up all fields.");
     }
 
     try {
@@ -227,6 +229,7 @@ export default function BookingPage() {
                 }}
                 value={petName}
                 onChange={(e) => setPetName(e.target.value)}
+                slotProps={{ htmlInput: { maxLength: 20 } }}
                 label="Pet Name"
                 fullWidth
               />
@@ -248,6 +251,7 @@ export default function BookingPage() {
                 }}
                 value={petBreed}
                 onChange={(e) => setPetBreed(e.target.value)}
+                slotProps={{ htmlInput: { maxLength: 20 } }}
                 label="Pet Breed"
                 fullWidth
               />
@@ -263,7 +267,7 @@ export default function BookingPage() {
                     timeSteps={{ minutes: 60 }}
                     minTime={dayjs(selectedDateTime).hour(9).minute(0)}
                     maxTime={dayjs(selectedDateTime).hour(18).minute(0)}
-                    minDate={dayjs().set("day", 1)}
+                    minDate={dayjs().set("day", 2)}
                     maxDate={dayjs().set("day", 30)}
                     value={selectedDateTime}
                     onChange={(newDateTime) => {

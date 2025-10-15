@@ -44,8 +44,16 @@ export default function ServicesAdd() {
   const handleFormSubmit = async (event) => {
     // event.preventDefault();
     // 1. check for error
-    if (!name || !price || !duration || !description || !image) {
-      toast.error("Please fill up all fields.");
+    if (
+      !name ||
+      !price ||
+      !duration ||
+      !description ||
+      !image ||
+      !name.trim() ||
+      !description.trim()
+    ) {
+      return toast.error("Please fill up all fields.");
     }
 
     try {
@@ -106,6 +114,7 @@ export default function ServicesAdd() {
                 }}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                slotProps={{ htmlInput: { maxLength: 25 } }}
                 label="Name"
                 fullWidth
               />
@@ -179,6 +188,7 @@ export default function ServicesAdd() {
                 }}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                slotProps={{ htmlInput: { maxLength: 100 } }}
                 label="Description"
                 fullWidth
               />

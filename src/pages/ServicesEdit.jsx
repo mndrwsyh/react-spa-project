@@ -69,7 +69,15 @@ export default function ServicesEdit() {
   const handleFormSubmit = async (event) => {
     // event.preventDefault();
     // 1. check for error
-    if (!name || !price || !duration || !description || !image) {
+    if (
+      !name ||
+      !price ||
+      !duration ||
+      !description ||
+      !image ||
+      !name.trim() ||
+      !description.trim()
+    ) {
       toast.error("Please fill up all fields.");
     }
 
@@ -147,6 +155,7 @@ export default function ServicesEdit() {
                 }}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                slotProps={{ htmlInput: { maxLength: 25 } }}
                 label="Name"
                 fullWidth
               />
@@ -220,6 +229,7 @@ export default function ServicesEdit() {
                 }}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                slotProps={{ htmlInput: { maxLength: 250 } }}
                 label="Description"
                 fullWidth
               />
