@@ -181,7 +181,7 @@ export default function ServicesPage() {
                           API_URL +
                           (service.image
                             ? service.image
-                            : "/api/uploads/default_pic.png")
+                            : "uploads/default_pic.png")
                         }
                       />
 
